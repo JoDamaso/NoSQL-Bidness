@@ -51,6 +51,11 @@ const ThoughtSchema = new Schema(
             get: (createdAtVal) => dateFormat(createdAtVal)
         },
 
+        username: {
+            type: String,
+            required: true,
+        },
+
         // associating replies with comments 
         reactions: [ReactionSchema]
     },

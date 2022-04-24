@@ -5,9 +5,9 @@ const {
     getOneUser,
     createUser,
     updateUser,
-    deleteUser 
+    deleteUser,
+    addFriend
 } = require('../../controllers/user-controller.js')
-
 
 // using call backs
 // at api/user
@@ -23,5 +23,11 @@ router
     .put(updateUser) // done
     .delete(deleteUser); // done
 
+// /api/user/:userId/friends/:friendId
+
+router
+    .route('/:userId/friends/:friendId')
+    .post(addFriend) // done
+    .delete
 
 module.exports = router;

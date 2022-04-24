@@ -7,15 +7,21 @@ const userController = {
     // get all users 
     getAllUser(req, res) {
         User.find({})
-            .populate({
-                path: 'friends', // fix this 
-                select: '-__v' // ignores this field while in populate
-            })
+            .populate([
+                {
+                    path: 'thoughts',
+                    select: '-__v'
+                },
+                {
+                    path: 'friends',
+                    select: '-__v'
+                }
+            ])
             .select ('-__v')
             .sort({ _id: -1 }) // newest on top
             .then(dbUserData => res.json(dbUserData))
             .catch(err => {
-                // console.error(err);
+                console.error(err);
                 res.status(400).json(err);
             });
     },
@@ -23,10 +29,16 @@ const userController = {
     // get one user using the params of _id
     getOneUser(req, res) {
         User.findOne({ _id: req.params.id }) 
-        .populate({
-            path: 'friends',
-            select: '-__v'
-        })
+        .populate([
+            {
+                path: 'thoughts',
+                select: '-__v'
+            },
+            {
+                path: 'friends',
+                select: '-__v'
+            }
+        ])
         .select('-__v')
         .then(dbUserData => {
             if (!dbUserData) {
@@ -59,6 +71,26 @@ const userController = {
                 res.json(dbUserData);
             })
             .catch(err => res.status(400).json(err));
+    },
+
+    addFriend({ params: { friendId, userId }}, res) {
+        User.findOneAndUpdate(
+            { _id: userId },
+            { $addToSet: { friends: friendId } },
+            { new: true, runValidators: true}
+        )
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id!!' });
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch(err => {
+                console.log(err);
+                console.error(err);
+                res.status(400).json(err);
+            })
     },
 
     // DELETE a user by id
