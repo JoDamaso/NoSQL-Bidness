@@ -1,6 +1,7 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const dateFormat = require('../utils/dateFormat.js')
 
+// subdocument
 const ReactionSchema = new Schema(
     {
         reactionId: {
@@ -31,7 +32,7 @@ const ReactionSchema = new Schema(
         toJSON: {
             getters: true,
         },
-        id: false
+        _id: false
     }
 )
 
